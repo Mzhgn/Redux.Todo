@@ -15,7 +15,7 @@ import {
 
 const todoInputElem = document.querySelector(".todo-input");
 const todoButtonElem = document.querySelector(".todo-button");
-
+const todosContainer = document.querySelector(".todo-list");
 // creating Reducer
 function todolistReducer(state = [], action) {
   switch (action.type) {
@@ -61,6 +61,26 @@ todoButtonElem.addEventListener("click", (e) => {
   const newTodoTitle = todoInputElem.value.trim();
   store.dispatch(addTodoAction(newTodoTitle));
   const todos = store.getState();
-  console.log(todos);
+  generateTodosInDom(todos);
   todoInputElem.value = "";
 });
+
+function generateTodosInDom(todos) {
+  todosContainer.innerHTML = " ";
+  todos.forEach((todo) => {
+    todosContainer.insertAdjacentHTML(
+      "beforeend",
+      `
+      <div class="todo">
+          <li class="todo-item">${todo.title}</li>
+          <button class="complete-btn">
+            <i class="fas fa-check-circle"></i>
+          </button>
+          <button class="trash-btn">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div> 
+      `
+    );
+  });
+}
