@@ -13,6 +13,8 @@ import {
   toDoAction,
 } from "../Redux/actionCreators.js";
 
+window.removeTodoHandler = removeTodoHandler;
+
 const todoInputElem = document.querySelector(".todo-input");
 const todoButtonElem = document.querySelector(".todo-button");
 const todosContainer = document.querySelector(".todo-list");
@@ -31,7 +33,9 @@ function todolistReducer(state = [], action) {
       return newState;
     }
     case removeTodo: {
-      return state;
+      let copyState = [...state];
+      let newState = copyState.filter((todo) => todo.id !== action.id);
+      return newState;
     }
     case doTodo: {
       return state;
@@ -65,6 +69,12 @@ todoButtonElem.addEventListener("click", (e) => {
   todoInputElem.value = "";
 });
 
+function removeTodoHandler(todoID) {
+  store.dispatch(removeTodoAction(todoID));
+  const todos = store.getState();
+  generateTodosInDom(todos);
+}
+
 function generateTodosInDom(todos) {
   todosContainer.innerHTML = " ";
   todos.forEach((todo) => {
@@ -76,7 +86,7 @@ function generateTodosInDom(todos) {
           <button class="complete-btn">
             <i class="fas fa-check-circle"></i>
           </button>
-          <button class="trash-btn">
+          <button class="trash-btn" onclick=removeTodoHandler("${todo.id}")>
             <i class="fas fa-trash"></i>
           </button>
         </div> 
