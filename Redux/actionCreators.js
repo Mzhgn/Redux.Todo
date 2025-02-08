@@ -12,7 +12,7 @@ function removeTodoAction(id) {
     id,
   };
 }
-function toDoAction(value) {
+function toDoAction(id) {
   return {
     type: doTodo,
     id,

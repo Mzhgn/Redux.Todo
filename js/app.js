@@ -14,6 +14,7 @@ import {
 } from "../Redux/actionCreators.js";
 
 window.removeTodoHandler = removeTodoHandler;
+window.completeTodoHandler = completeTodoHandler;
 
 const todoInputElem = document.querySelector(".todo-input");
 const todoButtonElem = document.querySelector(".todo-button");
@@ -38,7 +39,14 @@ function todolistReducer(state = [], action) {
       return newState;
     }
     case doTodo: {
-      return state;
+      let newState = [...state];
+      newState.some((todo) => {
+        if (todo.id === action.id) {
+          todo.isCompleted = !todo.isCompleted;
+        }
+      });
+
+      return newState;
     }
     case filterAllTodos: {
       return state;
@@ -75,15 +83,22 @@ function removeTodoHandler(todoID) {
   generateTodosInDom(todos);
 }
 
+function completeTodoHandler(todoID) {
+  store.dispatch(toDoAction(todoID));
+  const todos = store.getState();
+  generateTodosInDom(todos);
+}
 function generateTodosInDom(todos) {
   todosContainer.innerHTML = " ";
   todos.forEach((todo) => {
     todosContainer.insertAdjacentHTML(
       "beforeend",
       `
-      <div class="todo">
+      <div class="todo ${todo.isCompleted && "completed"}">
           <li class="todo-item">${todo.title}</li>
-          <button class="complete-btn">
+          <button class="complete-btn" onclick=completeTodoHandler("${
+            todo.id
+          }")>
             <i class="fas fa-check-circle"></i>
           </button>
           <button class="trash-btn" onclick=removeTodoHandler("${todo.id}")>
